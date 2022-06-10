@@ -5,6 +5,15 @@ public class Client {
     private String password;
     private int userId;
 
+    public Client() {
+    }
+
+    public Client(String username, String password, int userId) {
+        this.username = username;
+        this.password = password;
+        this.userId = userId;
+    }
+
     public String getUsername() {
         return username;
     }
