@@ -2,7 +2,14 @@ package dev.corbett.model;
 
 public class Account {
     private int accountNumber;
-    private double balance;
+    private float balance;
+    private int clientID;
+
+    public Account(int accountNumber, float balance, int clientID){
+        this.accountNumber = accountNumber;
+        this.balance = balance;
+        this.clientID = clientID;
+    }
 
     public int getAccountNumber() {
         return accountNumber;
@@ -12,11 +19,11 @@ public class Account {
         this.accountNumber = accountNumber;
     }
 
-    public double getBalance() {
+    public float getBalance() {
         return balance;
     }
 
-    public void setBalance(double balance) {
+    public void setBalance(float balance) {
         this.balance = balance;
     }
 }
