@@ -124,7 +124,7 @@ public class AccountDAO {
     }
 
     public void updateAccount(float balance, int userID, int accountID){
-        String sql = "update account set balance = ? where user_id = ? and account_number = ?;";
+        String sql = "update accounts set balance = ? where user_id = ? and account_number = ?;";
 
         try(Connection connect = cu.getConnection()){
             PreparedStatement ps = connect.prepareStatement(sql);
@@ -136,6 +136,8 @@ public class AccountDAO {
             sqle.printStackTrace();
         }
     }
+
+
 
 }
 
