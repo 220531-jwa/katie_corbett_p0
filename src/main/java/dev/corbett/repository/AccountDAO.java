@@ -123,21 +123,37 @@ public class AccountDAO {
         }
     }
 
-    public void updateAccount(float balance, int userID, int accountID){
+    public void updateAccount(float balance, int clientID, int accountNum){
         String sql = "update accounts set balance = ? where user_id = ? and account_number = ?;";
 
         try(Connection connect = cu.getConnection()){
             PreparedStatement ps = connect.prepareStatement(sql);
             ps.setFloat(1, balance);
-            ps.setInt(2, userID);
-            ps.setInt(3, accountID);
+            ps.setInt(2, clientID);
+            ps.setInt(3, accountNum);
             ps.executeQuery();
         } catch(SQLException sqle){
             sqle.printStackTrace();
         }
     }
 
+    public float getAccountBalance(int clientId, int accNum){
+        String sql = "select balance from accounts where user_id = ? and account_number = ?;";
 
+        try(Connection connect = cu.getConnection()){
+            PreparedStatement ps = connect.prepareStatement(sql);
+            ps.setInt(1, clientId);
+            ps.setInt(2, accNum);
 
+            ResultSet rs = ps.executeQuery();
+
+            float balance = rs.getFloat("balance");
+
+            return balance;
+        } catch(SQLException sqle){
+            sqle.printStackTrace();
+            return 0;
+        }
+    }
 }
 

@@ -6,7 +6,10 @@ import dev.corbett.repository.ClientDAO;
 import java.util.List;
 
 public class ClientService {
-    private static ClientDAO cDAO = new ClientDAO();
+    private static ClientDAO cDAO;
+    public ClientService(ClientDAO cDAO){
+        this.cDAO = cDAO;
+    }
 
     public Client createClient(Client c){
         Client createdClient = cDAO.createClient(c);
