@@ -3,7 +3,7 @@ package dev.corbett.model;
 public class Client {
     private String username;
     private String password;
-    private int userId;
+    private int clientId;
 
     public Client() {
     }
@@ -11,7 +11,7 @@ public class Client {
     public Client(String username, String password, int userId) {
         this.username = username;
         this.password = password;
-        this.userId = userId;
+        this.clientId = clientId;
     }
 
     public String getUsername() {
@@ -30,11 +30,11 @@ public class Client {
         this.password = password;
     }
 
-    public int getUserId() {
-        return userId;
+    public int getClientId() {
+        return clientId;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setClientId(int clientId) {
+        this.clientId = clientId;
     }
 }

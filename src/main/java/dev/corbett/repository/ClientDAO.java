@@ -56,12 +56,12 @@ public class ClientDAO {
         }
     }
 
-    public Client getClientById(int id){
+    public Client getClientById(int clientId){
         String sql = "select * from clients where id = ?";
 
         try (Connection connect = cu.getConnection()){
             PreparedStatement ps = connect.prepareStatement(sql);
-            ps.setInt(1, id);
+            ps.setInt(1, clientId);
 
             ResultSet rs = ps.executeQuery();
 
@@ -86,7 +86,7 @@ public class ClientDAO {
             PreparedStatement ps = connect.prepareStatement(sql);
             ps.setString(1, c.getUsername());
             ps.setString(2, c.getPassword());
-            ps.setInt(3, c.getUserId());
+            ps.setInt(3, c.getClientId());
 
             ps.executeQuery();
         } catch(SQLException sqle){
@@ -94,12 +94,12 @@ public class ClientDAO {
         }
     }
 
-    public void deleteClient(int id){
+    public void deleteClient(int clientId){
         String sql = "delete from client where id = ?";
 
         try(Connection connect = cu.getConnection()){
             PreparedStatement ps = connect.prepareStatement(sql);
-            ps.setInt(1, id);
+            ps.setInt(1, clientId);
             ps.executeQuery();
         } catch(SQLException sqle){
             sqle.printStackTrace();

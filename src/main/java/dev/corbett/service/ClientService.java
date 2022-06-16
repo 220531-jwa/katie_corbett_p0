@@ -16,8 +16,8 @@ public class ClientService {
         return createdClient;
     }
 
-    public Client getClientByID(int id) throws Exception{
-        Client c = cDAO.getClientById(id);
+    public Client getClientByID(int clientId) throws Exception{
+        Client c = cDAO.getClientById(clientId);
         if(c == null){
             throw new Exception("User not found");
         }

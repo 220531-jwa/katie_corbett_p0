@@ -2,7 +2,6 @@ package dev.corbett.service;
 
 import dev.corbett.model.Client;
 import dev.corbett.repository.ClientDAO;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -47,4 +46,5 @@ public class ClientServiceTests {
         //then
         assertEquals(mockClients, clientService.getAllClients());
     }
+
 }

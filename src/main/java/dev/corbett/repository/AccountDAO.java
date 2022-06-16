@@ -83,7 +83,7 @@ public class AccountDAO {
         return null;
     }
 
-    public List<Account> getAccountsByBalance(float balanceUpper, float balanceLower, int clientID){
+    public List<Account> getAccountsByBalance(float ceiling, float floor, int clientID){
         List<Account> accounts = new ArrayList<>();
 
         String sql = "select * from accounts where client_id = ? and balance > ? and balance < ?;";
@@ -91,8 +91,8 @@ public class AccountDAO {
         try(Connection connect = cu.getConnection()){
             PreparedStatement ps = connect.prepareStatement(sql);
             ps.setInt(1, clientID);
-            ps.setFloat(2, balanceLower);
-            ps.setFloat(3, balanceUpper);
+            ps.setFloat(2, ceiling);
+            ps.setFloat(3, floor);
 
             ResultSet rs = ps.executeQuery();
 
@@ -110,27 +110,27 @@ public class AccountDAO {
         }
     }
 
-    public void deleteAccount(int clientID, int accountID){
+    public void deleteAccount(int clientId, int accNum){
         String sql = "delete * from accounts where client_id = ? and account_number = ?;";
 
         try(Connection connect = cu.getConnection()){
             PreparedStatement ps = connect.prepareStatement(sql);
-            ps.setInt(1, clientID);
-            ps.setInt(2, accountID);
+            ps.setInt(1, clientId);
+            ps.setInt(2, accNum);
             ps.executeQuery();
         } catch(SQLException sqle){
             sqle.printStackTrace();
         }
     }
 
-    public void updateAccount(float balance, int clientID, int accountNum){
+    public void updateAccount(float balance, int clientId, int accNum){
         String sql = "update accounts set balance = ? where user_id = ? and account_number = ?;";
 
         try(Connection connect = cu.getConnection()){
             PreparedStatement ps = connect.prepareStatement(sql);
             ps.setFloat(1, balance);
-            ps.setInt(2, clientID);
-            ps.setInt(3, accountNum);
+            ps.setInt(2, clientId);
+            ps.setInt(3, accNum);
             ps.executeQuery();
         } catch(SQLException sqle){
             sqle.printStackTrace();
