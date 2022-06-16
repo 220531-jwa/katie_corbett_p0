@@ -14,7 +14,7 @@ public class ClientDAO {
     private static ConnectionUtil cu = ConnectionUtil.getConnectionUtil();
 
     public Client createClient(Client c){
-        String sql = "insert into clients value(default, ?, ?) returning *";
+        String sql = "insert into clients values (default, ?, ?) returning *";
         try (Connection connect = cu.getConnection();){
             PreparedStatement ps = connect.prepareStatement(sql);
             ps.setString(1, c.getUsername());

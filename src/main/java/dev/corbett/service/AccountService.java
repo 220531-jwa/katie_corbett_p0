@@ -41,7 +41,7 @@ public class AccountService {
         aDAO.deleteAccount(clientId, accNum);
     }
 
-    public void updateAccount(int clientId, int accNum, String operation, float total) throws Exception{
+    public boolean updateAccount(int clientId, int accNum, String operation, float total) throws Exception{
         float bal = aDAO.getAccountBalance(clientId, accNum);
         if(operation.equals("deposit")){
             bal += total;
@@ -53,9 +53,10 @@ public class AccountService {
         } else {
             aDAO.updateAccount(bal, clientId, accNum);
         }
+        return changed;
     }
 
-    public void transferBetweenAccounts (float total, String operation, int accNum1, int accNum2, int clientId) throws Exception{
+    public boolean transferBetweenAccounts (float total, int accNum1, int accNum2, int clientId) throws Exception{
         //remove total from account 1 - throw error if balance < 0
         float acc1bal = aDAO.getAccountBalance(clientId, accNum1);
         acc1bal -= total;
@@ -70,5 +71,6 @@ public class AccountService {
             //update account 2
             aDAO.updateAccount(acc2bal, clientId, accNum2);
         }
+        return changed;
     }
 }

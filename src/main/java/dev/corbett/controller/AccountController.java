@@ -8,6 +8,7 @@ import io.javalin.http.Context;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class AccountController {
     private static AccountService as;
@@ -116,9 +117,8 @@ public class AccountController {
     public static void updateAccount(Context ctx){
         int clientId = Integer.parseInt(ctx.pathParam("clientId"));
         int accNum = Integer.parseInt(ctx.pathParam("accNum"));
-        //String operation = ctx.body();
-        //float total = Float.parseFloat(ctx.body());
-        //need to figure out how to get total and operation from body
+        String operation = ctx.body();
+        float total = Float.parseFloat(ctx.body());
         Client c = null;
         try{
             c = cs.getClientByID(clientId);
@@ -133,9 +133,13 @@ public class AccountController {
                 e.printStackTrace();
             }
             if(a != null){
-                boolean updated = as.updateAccount();
-                if(updated == false){
-                    ctx.status(422);
+                try {
+                    boolean updated = as.updateAccount(clientId, accNum, operation, total);
+                    if(updated == false){
+                        ctx.status(422);
+                    }
+                }catch(Exception e){
+                    e.printStackTrace();
                 }
             }
             else{
@@ -150,8 +154,7 @@ public class AccountController {
         int clientId = Integer.parseInt(ctx.pathParam("clientId"));
         int accNum1 = Integer.parseInt(ctx.pathParam("accNum"));
         int accNum2 = Integer.parseInt(ctx.pathParam("accNum2"));
-        //float total = Float.parseFloat(ctx.body()); //help
-        //String operation = ctx.body(); //help
+        float total = Float.parseFloat(ctx.pathParam("amount"));
         Client c = null;
         try{
             c = cs.getClientByID(clientId);
@@ -173,12 +176,14 @@ public class AccountController {
                     e.printStackTrace();
                 }
                 if(b != null) {
-                    boolean updated = as.transferBetweenAccounts();
-                    if(updated == false){
-                        ctx.status(422);
+                    try {
+                        boolean updated = as.transferBetweenAccounts(total, accNum1, accNum2, clientId);
+                        if(updated == false){
+                            ctx.status(422);
+                        }
                     }
-                } else{
-                    ctx.status(404);
+                    catch(Exception e){
+                        e.printStackTrace();}
                 }
             } else{
                 ctx.status(404);

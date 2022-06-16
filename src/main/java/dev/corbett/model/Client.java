@@ -8,7 +8,7 @@ public class Client {
     public Client() {
     }
 
-    public Client(String username, String password, int userId) {
+    public Client(String username, String password, int clientId) {
         this.username = username;
         this.password = password;
         this.clientId = clientId;

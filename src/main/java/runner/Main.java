@@ -49,10 +49,10 @@ public class Main {
                         get(AccountController::getAllAccounts);
                         path("/{accNum}", () -> {
                            get(AccountController::getAccountByNumber);
-                           put(AccountController::updateAccount);
+                           //put(AccountController::updateAccount);
                            delete(AccountController::deleteAccount);
-                           patch(AccountController::updateAccount);
-                           path("/transfer/{accNum2}", () -> {
+                           //patch(AccountController::updateAccount);
+                           path("/transfer/{accNum2}/?amount=500", () -> {
                               patch(AccountController::transferBetweenAccounts);
                            });
                         });
