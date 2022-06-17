@@ -45,7 +45,7 @@ public class AccountService {
         float bal = aDAO.getAccountBalance(clientId, accNum);
         if(operation.equals("deposit")){
             bal += total;
-        } else
+        } else if(operation.equals("withdrawal"))
             bal -= total;
         boolean changed = true;
         if(bal < 0.00){

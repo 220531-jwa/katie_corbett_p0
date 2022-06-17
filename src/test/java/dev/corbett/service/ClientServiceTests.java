@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -22,12 +21,6 @@ public class ClientServiceTests {
 
     @Mock
     private static ClientDAO mockCDao;
-
-//    @BeforeAll
-//    public static void setUp(){
-//        clientService = new ClientService();
-//        mockCDao = mock(ClientDAO.class);
-//    }
 
 
     @Test
@@ -45,6 +38,30 @@ public class ClientServiceTests {
 
         //then
         assertEquals(mockClients, clientService.getAllClients());
+    }
+
+    @Test
+    public void should_createClient(){
+        //given
+        Client mockClient = new Client("lilac5", "passpass", 7);
+
+        //when
+        when(mockCDao.createClient(mockClient)).thenReturn(mockClient);
+
+        //then
+        assertEquals(mockClient, clientService.createClient(mockClient));
+    }
+
+    @Test
+    public void should_getClientById() throws Exception {
+        //given
+        Client mockClient = new Client("userTest", "passpass", 7);
+
+        //when
+        when(mockCDao.getClientById(7)).thenReturn(mockClient);
+
+        //then
+        assertEquals(mockClient, clientService.getClientByID(7));
     }
 
 }

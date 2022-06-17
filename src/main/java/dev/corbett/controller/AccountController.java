@@ -117,8 +117,15 @@ public class AccountController {
     public static void updateAccount(Context ctx){
         int clientId = Integer.parseInt(ctx.pathParam("clientId"));
         int accNum = Integer.parseInt(ctx.pathParam("accNum"));
-        String operation = ctx.body();
-        float total = Float.parseFloat(ctx.body());
+        String bodyString = ctx.body();
+        String operation = "";
+        if(bodyString.contains("deposit")){
+            operation = "deposit";
+        } else if(bodyString.contains("withdrawal")){
+            operation = "withdrawal";
+        }
+        String trimmedString = bodyString.replaceAll("[^0-9.]", "");
+        float total = Float.parseFloat(trimmedString);
         Client c = null;
         try{
             c = cs.getClientByID(clientId);
@@ -154,7 +161,9 @@ public class AccountController {
         int clientId = Integer.parseInt(ctx.pathParam("clientId"));
         int accNum1 = Integer.parseInt(ctx.pathParam("accNum"));
         int accNum2 = Integer.parseInt(ctx.pathParam("accNum2"));
-        float total = Float.parseFloat(ctx.pathParam("amount"));
+        String bodyString = ctx.body();
+        String trimmedBody = bodyString.replaceAll("[^0-9.]", "");
+        float total = Float.parseFloat(trimmedBody);
         Client c = null;
         try{
             c = cs.getClientByID(clientId);
