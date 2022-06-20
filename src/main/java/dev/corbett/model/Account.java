@@ -3,12 +3,18 @@ package dev.corbett.model;
 public class Account {
     private int accountNumber;
     private float balance;
-    private int clientID;
+    private int clientId;
+    private boolean checking;
 
-    public Account(int accountNumber, float balance, int clientID){
+    public Account(){
+
+    }
+
+    public Account(int accountNumber, float balance, int clientID, boolean checking){
         this.accountNumber = accountNumber;
         this.balance = balance;
-        this.clientID = clientID;
+        this.clientId = clientID;
+        this.checking = checking;
     }
 
     public int getAccountNumber() {
@@ -25,5 +31,20 @@ public class Account {
 
     public void setBalance(float balance) {
         this.balance = balance;
+    }
+
+    public int getClientId(){
+        return clientId;
+    }
+
+    public void setClientId(){
+        this.clientId = clientId;
+    }
+
+    public boolean getChecking(){
+        return checking;
+    }
+    public void setChecking(){
+        this.checking = checking;
     }
 }

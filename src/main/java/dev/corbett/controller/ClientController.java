@@ -24,15 +24,20 @@ public class ClientController {
     public static void createClient(Context ctx){
         ctx.status(201);
         Client clientFromRequestBody = ctx.bodyAsClass(Client.class);
-        Client c = cs.createClient(clientFromRequestBody);
-        ctx.json(c);
+        if(clientFromRequestBody.getPassword() == null){
+            ctx.status(404);
+        } else {
+            Client c = cs.createClient(clientFromRequestBody);
+            ctx.json(c);
+        }
+
     }
 
     public static void getClientById(Context ctx){
         int clientId = Integer.parseInt(ctx.pathParam("clientId"));
         Client c = null;
         try{
-            c = cs.getClientByID(clientId);
+            c = cs.getClientById(clientId);
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -48,7 +53,7 @@ public class ClientController {
         int clientId = Integer.parseInt(ctx.pathParam("clientId"));
         Client c = null;
         try{
-            c = cs.getClientByID(clientId);
+            c = cs.getClientById(clientId);
         } catch(Exception e){
             e.printStackTrace();
         }
@@ -66,14 +71,33 @@ public class ClientController {
         int clientId = Integer.parseInt(ctx.pathParam("clientId"));
         Client c = null;
         try{
-            c = cs.getClientByID(clientId);
+            c = cs.getClientById(clientId);
         } catch(Exception e){
             e.printStackTrace();
         }
         if (c != null) {
             cs.updateClient(cChanged);
+            ctx.json(cChanged);
             ctx.status(205);
         } else{
+            ctx.status(404);
+        }
+    }
+
+    public static void loginClient(Context ctx){
+        Client c = ctx.bodyAsClass(Client.class);
+        String username = c.getUsername();
+        String password = c.getPassword();
+        Client login = null;
+        try{
+            login = cs.loginClient(username, password);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        if(login != null){
+            ctx.status(205);
+            ctx.json(login);
+        } else {
             ctx.status(404);
         }
     }

@@ -6,33 +6,41 @@ import dev.corbett.repository.ClientDAO;
 import java.util.List;
 
 public class ClientService {
-    private static ClientDAO cDAO;
-    public ClientService(ClientDAO cDAO){
-        this.cDAO = cDAO;
+    private static ClientDAO cd;
+    public ClientService(ClientDAO cd){
+        this.cd = cd;
     }
 
     public Client createClient(Client c){
-        Client createdClient = cDAO.createClient(c);
+        Client createdClient = cd.createClient(c);
         return createdClient;
     }
 
-    public Client getClientByID(int clientId) throws Exception{
-        Client c = cDAO.getClientById(clientId);
-        if(c == null){
-            throw new Exception("User not found");
-        }
+    public List<Client> getAllClients(){
+        return cd.getAllClients();
+    }
+
+    public Client getClientById(int clientId){
+        Client c = cd.getClientById(clientId);
         return c;
     }
 
-    public List<Client> getAllClients(){
-        return cDAO.getAllClients();
+    public Client updateClient(Client cChanged){
+        Client cChangedTest = cd.updateClient(cChanged);
+        return cChangedTest;
     }
 
-    public void deleteClient(int clientID){
-        cDAO.deleteClient(clientID);
+    public Client deleteClient(int clientId){
+        Client deleted = cd.deleteClient(clientId);
+        return deleted;
     }
 
-    public void updateClient(Client cChanged){
-        cDAO.updateClient(cChanged);
+    public Client loginClient(String username, String password){
+        Client c = cd.getClientByUsername(username);
+        if(c.getPassword().equals(password)){
+            return c;
+        } else {
+            return null;
+        }
     }
 }

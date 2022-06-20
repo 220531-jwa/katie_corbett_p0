@@ -20,18 +20,19 @@ public class AccountController {
     }
 
     public static void createAccount(Context ctx){
-        ctx.status(201);
         Account accountFromBodyRequest = ctx.bodyAsClass(Account.class);
-        int clientId = Integer.parseInt(ctx.pathParam("clientId"));
-        Account a = as.createAccount(accountFromBodyRequest, clientId);
-        ctx.json(a);
+        Account a = as.createAccount(accountFromBodyRequest);
+        if(a != null){
+            ctx.status(201);
+            ctx.json(a);
+        }
     }
 
     public static void getAllAccounts(Context ctx){
         int clientId = Integer.parseInt(ctx.pathParam("clientId"));
         Client c = null;
         try{
-            c = cs.getClientByID(clientId);
+            c = cs.getClientById(clientId);
         } catch(Exception e){
             e.printStackTrace();
         }
@@ -48,16 +49,16 @@ public class AccountController {
         int accNum = Integer.parseInt(ctx.pathParam("accNum"));
         Client c = null;
         try{
-            c = cs.getClientByID(clientId);
+            c = cs.getClientById(clientId);
         } catch(Exception e){
             e.printStackTrace();
         }
-        if(c != null){
+        if(c == null){
             ctx.status(404);
         } else{
             Account a = null;
             try{
-                as.getAccountByNumber(accNum, clientId);
+                a = as.getAccountByNumber(accNum, clientId);
             } catch(Exception e){
                 e.printStackTrace();
             }
@@ -76,7 +77,7 @@ public class AccountController {
         int clientId = Integer.parseInt(ctx.pathParam("clientId"));
         Client c = null;
         try{
-            c = cs.getClientByID(clientId);
+            c = cs.getClientById(clientId);
         } catch(Exception e){
             e.printStackTrace();
         }
@@ -93,7 +94,7 @@ public class AccountController {
         int accNum = Integer.parseInt(ctx.pathParam("accNum"));
         Client c = null;
         try{
-            cs.getClientByID(clientId);
+            c = cs.getClientById(clientId);
         } catch(Exception e){
             e.printStackTrace();
         }
@@ -102,14 +103,15 @@ public class AccountController {
         } else{
             Account a = null;
             try{
-                as.getAccountByNumber(accNum, clientId);
+                a = as.getAccountByNumber(accNum, clientId);
             } catch(Exception e){
                 e.printStackTrace();
             }
-            if (a != null){
-                as.deleteAccount(accNum, clientId);
-            } else{
+            if (a == null){
                 ctx.status(404);
+            } else{
+                Account deleted = as.deleteAccount(accNum, clientId);
+                ctx.json(deleted);
             }
         }
     }
@@ -121,14 +123,14 @@ public class AccountController {
         String operation = "";
         if(bodyString.contains("deposit")){
             operation = "deposit";
-        } else if(bodyString.contains("withdrawal")){
+        } else if(bodyString.contains("withdrawal")) {
             operation = "withdrawal";
         }
         String trimmedString = bodyString.replaceAll("[^0-9.]", "");
         float total = Float.parseFloat(trimmedString);
         Client c = null;
         try{
-            c = cs.getClientByID(clientId);
+            c = cs.getClientById(clientId);
         } catch(Exception e){
             e.printStackTrace();
         }
@@ -141,9 +143,19 @@ public class AccountController {
             }
             if(a != null){
                 try {
-                    boolean updated = as.updateAccount(clientId, accNum, operation, total);
-                    if(updated == false){
+                    float totalOperation = 0;
+                    float balance = a.getBalance();
+                    if(operation.equals("deposit")){
+                        totalOperation = balance + total;
+                    } else if(operation.equals("withdrawal")){
+                        totalOperation = balance - total;
+                    }
+                    if(totalOperation < 0){
                         ctx.status(422);
+                    } else{
+                        boolean type = a.getChecking();
+                        Account updated = as.updateAccount(clientId, accNum, totalOperation, type);
+                        ctx.json(updated);
                     }
                 }catch(Exception e){
                     e.printStackTrace();
@@ -157,47 +169,96 @@ public class AccountController {
         }
     }
 
-    public static void transferBetweenAccounts(Context ctx){
-        int clientId = Integer.parseInt(ctx.pathParam("clientId"));
+    public static void updateAccountType(Context ctx){
+        Account updatedAccount = ctx.bodyAsClass(Account.class);
+        int clientId = updatedAccount.getClientId();
+        int accNum = updatedAccount.getAccountNumber();
+        boolean type = updatedAccount.getChecking();
+        float balance = updatedAccount.getBalance();
+        Client c = null;
+        try {
+            c = cs.getClientById(clientId);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        if(c == null){
+            ctx.status(404);
+        } else {
+            Account a = null;
+            try{
+                a = as.getAccountByNumber(clientId, accNum);
+                if(a == null){
+                    ctx.status(404);
+                } else{
+                    Account updated = as.updateAccount(clientId, accNum, balance, type);
+                    ctx.json(updated);
+                }
+            } catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void transferBetweenAccounts(Context ctx) {
+        int clientId1 = Integer.parseInt(ctx.pathParam("clientId"));
+        int clientId2 = Integer.parseInt(ctx.pathParam("clientId2"));
         int accNum1 = Integer.parseInt(ctx.pathParam("accNum"));
         int accNum2 = Integer.parseInt(ctx.pathParam("accNum2"));
         String bodyString = ctx.body();
         String trimmedBody = bodyString.replaceAll("[^0-9.]", "");
         float total = Float.parseFloat(trimmedBody);
-        Client c = null;
-        try{
-            c = cs.getClientByID(clientId);
-        } catch(Exception e){
+        Client c1 = null;
+        try {
+            c1 = cs.getClientById(clientId1);
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        if(c != null){
-            Account a = null;
+        if(c1 != null){
+            Client c2 = null;
             try{
-                a = as.getAccountByNumber(accNum1, clientId);
+                c2 = cs.getClientById(clientId2);
             } catch(Exception e){
                 e.printStackTrace();
             }
-            if(a != null){
-                Account b = null;
+            if (c2 != null) {
+                Account a1 = null;
                 try{
-                    b = as.getAccountByNumber(accNum2, clientId);
+                    a1 = as.getAccountByNumber(clientId1, accNum1);
                 } catch(Exception e){
                     e.printStackTrace();
                 }
-                if(b != null) {
-                    try {
-                        boolean updated = as.transferBetweenAccounts(total, accNum1, accNum2, clientId);
-                        if(updated == false){
-                            ctx.status(422);
-                        }
+                if(a1 != null){
+                    Account a2 = null;
+                    try{
+                        a2 = as.getAccountByNumber(clientId2, accNum2);
+                    } catch(Exception e){
+                        e.printStackTrace();
                     }
-                    catch(Exception e){
-                        e.printStackTrace();}
+                    if(a2 != null){
+                        try{
+                            float bal1 = a1.getBalance();
+                            float bal2 = a2.getBalance();
+                            boolean type1 = a1.getChecking();
+                            boolean type2 = a2.getChecking();
+                            List<Account> updated =  as.transferBetweenAccounts(total, accNum1, accNum2, clientId1, clientId2, bal1, bal2, type1, type2);
+                            if(updated == null){
+                                ctx.status(422);
+                            } else{
+                                ctx.json(updated);
+                            }
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+                    } else {
+                        ctx.status(404);
+                    }
+                } else {
+                    ctx.status(404);
                 }
-            } else{
+            } else {
                 ctx.status(404);
             }
-        } else{
+        } else {
             ctx.status(404);
         }
     }

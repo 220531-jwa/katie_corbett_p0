@@ -37,21 +37,31 @@ public class Main {
             path("/clients", () -> {
                 get(ClientController::getAllClients);
                 post(ClientController::createClient);
+                path("/login", () -> {
+                    get(ClientController::loginClient);
+                });
                 path("/{clientId}", () -> {
                     get(ClientController::getClientById);
                     put(ClientController::updateClient);
                     delete(ClientController::deleteClient);
-                    path("/accounts?amountLessThan=2000&amountGreaterThan=400", () -> {
+                    path("/accounts?amountLessThan=500&amountGreaterThan=400", () -> {
                         get(AccountController::getAccountsByBalance);
                     });
                     path("/accounts", () -> {
                         post(AccountController::createAccount);
                         get(AccountController::getAllAccounts);
                         path("/{accNum}", () -> {
-                           get(AccountController::getAccountByNumber);
-                           put(AccountController::updateAccount);
-                           delete(AccountController::deleteAccount);
-                           patch(AccountController::updateAccount);
+                            get(AccountController::getAccountByNumber);
+                            put(AccountController::updateAccountType);
+                            delete(AccountController::deleteAccount);
+                            patch(AccountController::updateAccount);
+                            path("/transfer", () -> {
+                                path("/{clientId2}", () -> {
+                                    path("/{accNum2}", () -> {
+                                        patch(AccountController::transferBetweenAccounts);
+                                    });
+                                });
+                            });
                         });
                     });
                 });

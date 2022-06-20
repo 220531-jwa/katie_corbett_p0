@@ -12,16 +12,19 @@ import java.util.List;
 
 public class AccountService {
     private static AccountDAO aDAO;
-    public AccountService(AccountDAO aDAO){
+
+    public AccountService(AccountDAO aDAO) {
         this.aDAO = aDAO;
     }
+
     private static ClientDAO cDAO;
-    public AccountService(ClientDAO cDAO){
+
+    public AccountService(ClientDAO cDAO) {
         this.cDAO = cDAO;
     }
 
-    public Account createAccount(Account a, int clientId){
-        Account createdAccount = aDAO.createAccount(a, clientId);
+    public Account createAccount(Account a) {
+        Account createdAccount = aDAO.createAccount(a);
         return createdAccount;
     }
 
@@ -29,48 +32,31 @@ public class AccountService {
         return aDAO.getAllAccounts(clientId);
     }
 
-    public Account getAccountByNumber(int accNum, int clientId){
-        return aDAO.getAccountByNumber(accNum, clientId);
+    public Account getAccountByNumber(int clientId, int accNum){
+        return aDAO.getAccountByNumber(clientId, accNum);
     }
 
     public List<Account> getAccountsByBalance(float ceiling, float floor, int clientId){
         return aDAO.getAccountsByBalance(ceiling, floor, clientId);
     }
 
-    public void deleteAccount(int clientId, int accNum){
-        aDAO.deleteAccount(clientId, accNum);
+    public Account deleteAccount(int clientId, int accNum){
+        return aDAO.deleteAccount(clientId, accNum);
     }
 
-    public boolean updateAccount(int clientId, int accNum, String operation, float total) throws Exception{
-        float bal = aDAO.getAccountBalance(clientId, accNum);
-        if(operation.equals("deposit")){
-            bal += total;
-        } else if(operation.equals("withdrawal"))
-            bal -= total;
-        boolean changed = true;
-        if(bal < 0.00){
-            changed = false;
-        } else {
-            aDAO.updateAccount(bal, clientId, accNum);
-        }
-        return changed;
+    public Account updateAccount(int clientId, int accNum, float total, boolean type){
+        return aDAO.updateAccount(total, clientId, accNum, type);
     }
 
-    public boolean transferBetweenAccounts (float total, int accNum1, int accNum2, int clientId) throws Exception{
-        //remove total from account 1 - throw error if balance < 0
-        float acc1bal = aDAO.getAccountBalance(clientId, accNum1);
-        acc1bal -= total;
-        boolean changed = true;
-        if(acc1bal < 0){
-            changed = false;
-        } else{
-            float acc2bal = aDAO.getAccountBalance(clientId, accNum2);
-            acc2bal += total;
-            //update account 1
-            aDAO.updateAccount(acc1bal, clientId, accNum1);
-            //update account 2
-            aDAO.updateAccount(acc2bal, clientId, accNum2);
-        }
-        return changed;
+    public float getAccountBalance(int clientId, int accNum){
+        return aDAO.getAccountBalance(clientId, accNum);
+    }
+
+    public String getAccountType(int clientId, int accNum){
+        return aDAO.getAccountType(clientId, accNum);
+    }
+
+    public List<Account> transferBetweenAccounts (float total, int accNum1, int accNum2, int clientId1, int clientId2, float bal1, float bal2, boolean type1, boolean type2){
+        return aDAO.transferBetweenAccounts(total, accNum1, accNum2, clientId1, clientId2, bal1, bal2, type1, type2);
     }
 }
