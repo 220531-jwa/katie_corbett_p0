@@ -23,8 +23,6 @@ public class AccountServiceTests {
     @Mock
     private static AccountDAO mockADao;
 
-    @Mock
-    private static AccountService asMock;
 
     @Test
     public void should_createAccount(){

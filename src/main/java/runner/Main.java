@@ -44,12 +44,10 @@ public class Main {
                     get(ClientController::getClientById);
                     put(ClientController::updateClient);
                     delete(ClientController::deleteClient);
-                    path("/accounts?amountLessThan=500&amountGreaterThan=400", () -> {
-                        get(AccountController::getAccountsByBalance);
-                    });
                     path("/accounts", () -> {
                         post(AccountController::createAccount);
                         get(AccountController::getAllAccounts);
+//                        get(AccountController::getAccountsByBalance);
                         path("/{accNum}", () -> {
                             get(AccountController::getAccountByNumber);
                             put(AccountController::updateAccountType);

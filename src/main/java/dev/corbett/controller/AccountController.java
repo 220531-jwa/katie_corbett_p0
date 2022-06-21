@@ -15,8 +15,8 @@ public class AccountController {
     private static ClientService cs;
 
     public AccountController(AccountService as, ClientService cs){
-        this.as = as;
-        this.cs = cs;
+        AccountController.as = as;
+        AccountController.cs = cs;
     }
 
     public static void createAccount(Context ctx){
@@ -25,23 +25,35 @@ public class AccountController {
         if(a != null){
             ctx.status(201);
             ctx.json(a);
+        } else {
+            ctx.status(404);
         }
     }
 
     public static void getAllAccounts(Context ctx){
         int clientId = Integer.parseInt(ctx.pathParam("clientId"));
+        String ceiling = ctx.queryParam("amountLessThan");
+        String floor = ctx.queryParam("amountGreaterThan");
         Client c = null;
-        try{
-            c = cs.getClientById(clientId);
-        } catch(Exception e){
-            e.printStackTrace();
-        }
-        if(c != null){
-            List<Account> accounts = as.getAllAccounts(clientId);
+        if(ceiling != null && floor != null){
+            float ceilingPass = Float.parseFloat(ceiling);
+            float floorPass = Float.parseFloat(floor);
+            List<Account> accounts = as.getAccountsByBalance(ceilingPass, floorPass, clientId);
             ctx.json(accounts);
-        } else{
-            ctx.status(404);
+        } else {
+            try{
+                c = cs.getClientById(clientId);
+            } catch(Exception e){
+                e.printStackTrace();
+            }
+            if(c != null){
+                List<Account> accounts = as.getAllAccounts(clientId);
+                ctx.json(accounts);
+            } else{
+                ctx.status(404);
+            }
         }
+
     }
 
     public static void getAccountByNumber(Context ctx){
@@ -50,6 +62,7 @@ public class AccountController {
         Client c = null;
         try{
             c = cs.getClientById(clientId);
+            ctx.json(c);
         } catch(Exception e){
             e.printStackTrace();
         }
@@ -72,8 +85,8 @@ public class AccountController {
     }
 
     public static void getAccountsByBalance(Context ctx){
-        float ceiling = Float.parseFloat(ctx.queryParam("amountLessThan"));
-        float floor = Float.parseFloat(ctx.queryParam("amountGreaterThan"));
+        float ceiling = Float.parseFloat(ctx.pathParam("amountLessThan"));
+        float floor = Float.parseFloat(ctx.pathParam("amountGreaterThan"));
         int clientId = Integer.parseInt(ctx.pathParam("clientId"));
         Client c = null;
         try{

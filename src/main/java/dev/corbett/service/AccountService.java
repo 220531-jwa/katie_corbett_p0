@@ -24,8 +24,7 @@ public class AccountService {
     }
 
     public Account createAccount(Account a) {
-        Account createdAccount = aDAO.createAccount(a);
-        return createdAccount;
+        return aDAO.createAccount(a);
     }
 
     public List<Account> getAllAccounts(int clientId){

@@ -49,7 +49,7 @@ public class AccountDAO {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                int id = rs.getInt("id");
+                int id = rs.getInt("client_id");
                 int accNum = rs.getInt("account_number");
                 float bal = rs.getFloat("balance");
                 boolean type = rs.getBoolean("checking");
@@ -103,8 +103,8 @@ public class AccountDAO {
                 int accountNumber = rs.getInt("account_number");
                 float bal = rs.getFloat("balance");
                 int clientNum = rs.getInt("client_id");
-                boolean type = rs.getBoolean("checking");
-                Account a = new Account(accountNumber, bal, clientNum, type);
+                boolean checking = rs.getBoolean("checking");
+                Account a = new Account(accountNumber, bal, clientNum, checking);
                 accounts.add(a);
             }
             return accounts;
@@ -172,7 +172,7 @@ public class AccountDAO {
 
             ResultSet rs = ps.executeQuery();
 
-            float balance = rs.getFloat("balance");
+            float balance = rs.getFloat("type");
 
             return balance;
         } catch(SQLException e){
